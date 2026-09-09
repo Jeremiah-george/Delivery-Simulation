@@ -1,0 +1,39 @@
+# Delivery Dispatch Simulation
+
+Small Java project I made for my CV. It simulates a food delivery platform matching customers to the nearest restaurant that can actually deliver to them.
+
+You feed it commands through stdin (add a restaurant, add a customer, move someone, etc.) and it keeps everything matched up automatically. Customers only get matched within their own platform (like DoorDash), and only to restaurants close enough to reach them. If two restaurants are tied on distance, whichever one has fewer orders right now gets picked.
+
+## Running it
+
+```
+javac *.java
+java DeliverySimulation
+```
+
+You can also just pipe a file of commands in:
+```
+java DeliverySimulation < commands.txt
+```
+
+## Commands
+
+Each command is its own line, with any arguments on the lines right after it.
+
+- `ADD_CUSTOMER` – id, platform name, x, y
+- `REMOVE_CUSTOMER` – id
+- `MOVE_CUSTOMER` – id, new x, new y
+- `ADD_RESTAURANT` – id, x, y, delivery radius
+- `REMOVE_RESTAURANT` – id
+- `RESTAURANT_ORDER_COUNT` – id (prints number of orders)
+- `ADD_PLATFORM` – name
+- `PLATFORM_CUSTOMER_COUNT` – name (prints count)
+- `REGISTER_PLATFORM_RESTAURANT` – platform name, restaurant id
+- `CHANGE_PLATFORM` – customer id, new platform name
+- `NO_COVERAGE_COUNT` – no args, prints how many customers have nothing in range
+
+## Files
+
+- `Restaurant.java` / `Customer.java` / `Platform.java` – the basic entities
+- `DeliverySystem.java` – where all the matching logic lives
+- `DeliverySimulation.java` – main(), reads the commands and calls into DeliverySystem
