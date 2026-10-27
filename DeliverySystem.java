@@ -102,15 +102,14 @@ public class DeliverySystem {
         double minDistance = Double.MAX_VALUE;
 
         for (Restaurant restaurant : customerPlatform.restaurants) {
-            double dist = Math.sqrt(Math.pow(customer.x - restaurant.x, 2) + Math.pow(customer.y - restaurant.y, 2));
-
-            if (dist <= restaurant.deliveryRad && dist < minDistance) {
+            double dist = Math.hypot(customer.x - restaurant.x, customer.y - restaurant.y);
+            if (dist > restaurant.deliveryRad) continue;
+            if (nearest == null || dist < minDistance - 0.0001) {
                 minDistance = dist;
                 nearest = restaurant;
-            } else if (nearest != null && Math.abs(dist - minDistance) < 0.0001) {
-                if (getCustomerCountForRestaurant(restaurant) < getCustomerCountForRestaurant(nearest)) {
-                    nearest = restaurant;
-                }
+            } else if (Math.abs(dist - minDistance) < 0.0001
+                    && getCustomerCountForRestaurant(restaurant) < getCustomerCountForRestaurant(nearest)) {
+                nearest = restaurant;
             }
         }
 
@@ -151,7 +150,8 @@ public class DeliverySystem {
 
             // Re-evaluate customers for this platform as they might find this new restaurant closer
             for (Customer customer : customers) {
-                if (customer.platformName.equals(platformName)) {
+                if (customer.platformName.equals(platformName)
+                        && Math.hypot(customer.x - targetRestaurant.x, customer.y - targetRestaurant.y) <= targetRestaurant.deliveryRad) {
                     customer.assignedRestaurant = findNearestRestaurantForCustomer(customer);
                 }
             }

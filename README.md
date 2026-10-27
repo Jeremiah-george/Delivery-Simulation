@@ -1,8 +1,10 @@
 # Delivery Dispatch Simulation
 
-Small Java project I made for my CV. It simulates a food delivery platform matching customers to the nearest restaurant that can actually deliver to them.
+A Java project that simulates a food delivery platform matching customers to the nearest restaurant that can actually deliver to them.
 
-You feed it commands through stdin (add a restaurant, add a customer, move someone, etc.) and it keeps everything matched up automatically. Customers only get matched within their own platform (like DoorDash), and only to restaurants close enough to reach them. If two restaurants are tied on distance, whichever one has fewer orders right now gets picked.
+You feed it commands through stdin (add a restaurant, add a customer, move someone, etc.) and it keeps everything matched up automatically. Customers only get matched within their own platform (like DoorDash), and only to restaurants whose delivery radius covers them. If two restaurants are tied on distance, whichever one has fewer orders right now gets picked.
+
+When something changes, only the customers it can affect are re-matched. For example, a newly registered restaurant only triggers re-matching for customers inside its delivery radius.
 
 ## Running it
 
@@ -12,9 +14,20 @@ java DeliverySimulation
 ```
 
 You can also just pipe a file of commands in:
+
 ```
 java DeliverySimulation < commands.txt
 ```
+
+## Testing
+
+```
+java SimulationTest
+```
+
+`SimulationTest` replays 10,000 random events with a fixed seed (adding, moving and removing customers and restaurants, and switching platforms). After every event it recomputes each customer's correct assignment from scratch using the plain rules (right platform, in range, nearest wins) and compares it to what the engine assigned. It prints the number of mismatches and the average and maximum time per event.
+
+Latest run: `[paste your output here]`
 
 ## Commands
 
@@ -37,3 +50,4 @@ Each command is its own line, with any arguments on the lines right after it.
 - `Restaurant.java` / `Customer.java` / `Platform.java` – the basic entities
 - `DeliverySystem.java` – where all the matching logic lives
 - `DeliverySimulation.java` – main(), reads the commands and calls into DeliverySystem
+- `SimulationTest.java` – randomised consistency and timing test
